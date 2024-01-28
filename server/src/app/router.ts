@@ -1,5 +1,6 @@
 import express from 'express';
 import { compareIP } from './ipcompare';
+import moment from 'moment';
 
 const router = express.Router();
 
@@ -9,7 +10,9 @@ router.post('/',async(req,res)=>{
         if(ipaddr=='null')return;
         if(ipaddr.startsWith('::ffff:')){
             ipaddr = ipaddr.slice(7);
-            console.log('ip'+ipaddr+'发来了一条post');
+            const now:Date = new Date();
+            const dateString:string = `[${moment(now).format('YYYY-MM-DD HH:mm')}] `
+            console.log(ipaddr+'发来了一条post');
         }
         if(await compareIP(ipaddr)){
             let data = {
