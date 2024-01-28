@@ -11,7 +11,7 @@ const domain:string=config.domainName;
 const subdomain:string=config.subDomainName;
 let currentIpAddr:string = '';
 
-function checkAndCreatFile(filepath:string):void{
+function checkCurrentRecordFile(filepath:string):void{
     const folderPath = path.dirname(filepath);
     if(!fs.existsSync(folderPath)){
         fs.mkdirSync(folderPath,{recursive:true});
@@ -23,11 +23,20 @@ function checkAndCreatFile(filepath:string):void{
         currentIpAddr = fs.readFileSync(filepath,'utf-8');
     }
 }
+function checkChangeRecordFile(filepath:string):void{
+    const folderPath = path.dirname(filepath);
+    if(!fs.existsSync(folderPath)){
+        fs.mkdirSync(folderPath,{recursive:true});
+    }
+    if(!fs.existsSync(filepath)){
+        fs.writeFileSync(filepath,'','utf-8');
+    }
+}
 
 export async function compareIP(ipaddr:string):Promise<boolean>{
     if(ipaddr!=currentIpAddr){
         if(currentIpAddr==''){
-            currentIpAddr==ipaddr;
+            currentIpAddr=ipaddr;
             fs.writeFileSync(currentRecordFilepath,currentIpAddr,'utf-8');
             return false;
         }
@@ -82,5 +91,5 @@ function addRecord(newip:string):void{
     fs.writeFileSync(changeRecordFilePath,data,'utf-8');
 }
 
-checkAndCreatFile(currentRecordFilepath);
-checkAndCreatFile(changeRecordFilePath);
+checkCurrentRecordFile(currentRecordFilepath);
+checkChangeRecordFile(changeRecordFilePath);
