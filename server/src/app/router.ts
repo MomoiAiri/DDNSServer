@@ -12,7 +12,7 @@ router.post('/',async(req,res)=>{
             ipaddr = ipaddr.slice(7);
             const now:Date = new Date();
             const dateString:string = `[${moment(now).format('YYYY-MM-DD HH:mm')}] `
-            console.log(ipaddr+'发来了一条post');
+            console.log(dateString + ipaddr+'发来了一条post');
         }
         if(await compareIP(ipaddr)){
             let data = {
