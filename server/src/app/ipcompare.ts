@@ -3,8 +3,10 @@ import path from 'path';
 import {client} from './dnsClient'
 import { DescribeRecordListRequest, DescribeRecordListResponse, ModifyRecordRequest } from 'tencentcloud-sdk-nodejs-dnspod/tencentcloud/services/dnspod/v20210323/dnspod_models';
 import { config } from '../config';
+import moment from 'moment';
 
-const filepath:string = '../data/currentRecord.txt';
+const currentRecordFilepath:string = '../data/currentRecord.txt';
+const changeRecordFilePath :string = '../data/changeRecord.txt';
 const domain:string=config.domainName;
 const subdomain:string=config.subDomainName;
 let currentIpAddr:string = '';
@@ -26,7 +28,7 @@ export async function compareIP(ipaddr:string):Promise<boolean>{
     if(ipaddr!=currentIpAddr){
         if(currentIpAddr==''){
             currentIpAddr==ipaddr;
-            fs.writeFileSync(filepath,currentIpAddr,'utf-8');
+            fs.writeFileSync(currentRecordFilepath,currentIpAddr,'utf-8');
             return false;
         }
         let recordListData:DescribeRecordListResponse = {};
@@ -54,7 +56,8 @@ export async function compareIP(ipaddr:string):Promise<boolean>{
                 (data)=>{
                     // console.log(data);
                     if(data.RecordId == recordId){
-                        fs.writeFileSync(filepath,ipaddr,'utf-8');
+                        fs.writeFileSync(currentRecordFilepath,ipaddr,'utf-8');
+                        addRecord(ipaddr);
                         console.log('ip映射修改成功');
                         return true;
                     }
@@ -71,5 +74,13 @@ export async function compareIP(ipaddr:string):Promise<boolean>{
     }
     return false;
 }
+function addRecord(newip:string):void{
+    let data:string = fs.readFileSync(changeRecordFilePath,'utf-8');
+    const now:Date = new Date();
+    const record:string = `[${moment(now).format('YYYY-MM-DD HH:mm')}] 变更为 ${newip}`;
+    data = data + '\n' + record;
+    fs.writeFileSync(changeRecordFilePath,data,'utf-8');
+}
 
-checkAndCreatFile(filepath);
+checkAndCreatFile(currentRecordFilepath);
+checkAndCreatFile(changeRecordFilePath);
