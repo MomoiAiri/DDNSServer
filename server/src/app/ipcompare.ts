@@ -67,6 +67,7 @@ export async function compareIP(ipaddr:string):Promise<boolean>{
                     if(data.RecordId == recordId){
                         fs.writeFileSync(currentRecordFilepath,ipaddr,'utf-8');
                         addRecord(ipaddr);
+                        currentIpAddr=ipaddr;
                         console.log('ip映射修改成功');
                         return true;
                     }
