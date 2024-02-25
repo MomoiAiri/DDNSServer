@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import * as fs from 'fs';
+import path from 'path';
 
 interface Config{
     posturl:string,
@@ -8,8 +9,9 @@ interface Config{
 interface Req{
     action:string
 }
-
-const json:string= fs.readFileSync('./config.json','utf-8');
+const mainDir = path.dirname(__dirname)
+const configPath = path.join(mainDir,'src/config.json')
+const json:string= fs.readFileSync(configPath,'utf-8');
 const config:Config = JSON.parse(json);
 let req:Req = {action:'ddns'};
 

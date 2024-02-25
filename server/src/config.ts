@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import path from 'path';
 
 interface Config{
     secretID:string,
@@ -7,8 +8,8 @@ interface Config{
     subDomainName:string,
     listenPort:number
 }
-
-const configPath:string = '../data/config.json';
+const mainDir:string = path.dirname(__dirname)
+const configPath:string = path.join(mainDir,'data/config.json');
 const json:string = fs.readFileSync(configPath,'utf-8')
 export const config:Config = JSON.parse(json)
 console.log(config);
